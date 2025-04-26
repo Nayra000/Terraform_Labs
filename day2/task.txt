@@ -1,0 +1,40 @@
+1-create two workspaces dev and prod
+2-create two variable definition files(.tfvars) for the two environments
+3-create subnets with single resource and for_each
+4-use data section for ami_id
+5-apply your code to create two environments one in us-east-1 and eu-central-1
+6-run local-exec provisioner to print the public_ip of bastion ec2
+7-create rds (mysql) in private subnet 
+8-create elastic cache(redis) in private subnet
+9-create lambda function (python print hello world) with terraform
+
+
+
+
+===============================================================================================
+
+terraform init
+
+terraform workspace new dev
+terraform workspace new prod
+
+terraform workspace list
+
+terraform workspace select dev
+terraform workspace select prod
+
+terraform plan -var-file="dev.tfvars"
+terraform plan -var-file="prod.tfvars"
+
+terraform apply -var-file="dev.tfvars"
+terraform apply -var-file="prod.tfvars"
+
+terraform taint
+terraform untaint
+
+
+=====================================
+zip lambda.zip lambda_function.py  => to terraform can deploy it
+
+aws lambda invoke --function-name hello-world output.txt  => to tigger lambda manually
+
