@@ -1,0 +1,7 @@
+1-separate network resources into network module
+2-upload infrastructure code on github project
+3-verify your email in ses service
+4-create lambda function to send email
+5-create s3 event notification to detect changes in state file and send the email
+
+optional: use eks module from terraform registry to create eks cluster with private node groups and use terraform to create two namespaces dev and prod 
