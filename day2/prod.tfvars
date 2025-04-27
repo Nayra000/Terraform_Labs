@@ -10,25 +10,25 @@ subnets_list = [
     {
         name = "public_subnet1" ,
         cider_block = "10.0.1.0/24" ,
-        az = "us-east-1a" ,
+        az = "eu-central-1a" ,
         type = "public"
     } ,
     {
         name = "public_subnet2" ,
         cider_block = "10.0.3.0/24" ,
-        az = "us-east-1b" ,
+        az = "eu-central-1b" ,
         type = "public"
     } ,
     {
         name = "private_subnet1" ,
         cider_block = "10.0.2.0/24" ,
-        az = "us-east-1a" ,
+        az = "eu-central-1a" ,
         type = "private"
     } ,
         {
         name = "private_subnet2" ,
         cider_block = "10.0.4.0/24" ,
-        az = "us-east-1b" ,
+        az = "eu-central-1b" ,
         type = "private"
     } ,
 
