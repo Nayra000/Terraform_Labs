@@ -6,6 +6,11 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs() 
+            }
+        }
         stage('Clone Repository') {
             steps {
                 git url: 'https://github.com/Nayra000/Terraform_Labs.git', branch: 'main'
@@ -14,42 +19,34 @@ pipeline {
 
         stage('Initialize Terraform') {
             steps {
-                dir('day1') {
-                    sh 'terraform init'
-                }
+                terraformInit(directory: 'day1')
             }
         }
 
         stage('Plan Infrastructure') {
             steps {
-                dir('day1') {
-                    sh 'terraform plan -out=tfplan'
-                }
+                terraformPlan(directory: 'day1', planFile: 'tfplan')
             }
         }
 
         stage('Apply Changes') {
             steps {
-                dir('day1') {
-                    withEnv([
-                        "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
-                        "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
-                    ]) {
-                        sh 'terraform apply tfplan'
-                    }
+                withEnv([
+                    "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
+                    "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
+                ]) {
+                    terraformApply(directory: 'day1', planFile: 'tfplan')
                 }
             }
         }
 
         stage('Destroy Changes') {
             steps {
-                dir('day1') {
-                    withEnv([
-                        "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
-                        "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
-                    ]) {
-                        sh 'terraform destroy -auto-approve'
-                    }
+                withEnv([
+                    "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
+                    "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
+                ]) {
+                    terraformDestroy(directory: 'day1', forceDestroy: true)
                 }
             }
         }
