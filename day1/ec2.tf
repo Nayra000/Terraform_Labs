@@ -1,7 +1,7 @@
-resource "aws_key_pair" "ssh_key" {
-  key_name   = "my-key"
-  public_key = file("../keys/my-key.pub") 
-}
+# resource "aws_key_pair" "ssh_key" {
+#   key_name   = "my-key"
+#   public_key = file("../keys/my-key.pub") 
+# }
 
 
 
@@ -12,7 +12,7 @@ resource "aws_instance" "bastion" {
   security_groups = [
     aws_security_group.allow_ssh_anywhere.id
   ]
-  key_name = aws_key_pair.ssh_key. key_name
+  # key_name = aws_key_pair.ssh_key. key_name
 
   tags = {
     Name = "Bastion-Host"
@@ -26,7 +26,7 @@ resource "aws_instance" "application" {
   security_groups = [
     aws_security_group.allow_ssh_and_3000_vpc.id
   ]
-  key_name = aws_key_pair.ssh_key. key_name
+  # key_name = aws_key_pair.ssh_key. key_name
 
   tags = {
     Name = "Application-Host"
