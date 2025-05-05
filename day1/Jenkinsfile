@@ -1,76 +1,87 @@
 pipeline {
-         agent {
+    agent {
         docker {
-            image 'hashicorp/terraform:latest' // Instead of :light
+            image 'hashicorp/terraform:latest'
             args '--entrypoint=""'
         }
     }
-     environment {
-         AWS_CREDS = credentials('aws-credentials')  // Must be username/password type
-         
-     }
- 
-     stages {
-          stage('Clean Workspace') {
+
+    environment {
+        AWS_CREDS = credentials('aws-credentials') // Must be Username/Password type
+    }
+
+    stages {
+        stage('Clean Workspace') {
             steps {
-                cleanWs() 
+                cleanWs()
             }
         }
-         stage('Clone Repository') {
-             steps {
-                 git url: 'https://github.com/Nayra000/Terraform_Labs.git', branch: 'main'
-             }
-         }
- 
-         stage('Initialize Terraform') {
-             steps {
-                 dir('day1') {
-                     sh 'terraform init'
-                 }
-             }
-         }
- 
-         stage('Plan Infrastructure') {
-             steps {
-                 dir('day1') {
-                     sh 'terraform plan -out=tfplan'
-                 }
-             }
-         }
- 
-         stage('Apply Changes') {
-             steps {
-                 dir('day1') {
-                     withEnv([
-                         "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
-                         "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
-                     ]) {
-                         sh 'terraform apply tfplan'
-                     }
-                 }
-             }
-         }
- 
-         stage('Destroy Changes') {
-             steps {
-                 dir('day1') {
-                     withEnv([
-                         "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
-                         "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
-                     ]) {
-                         sh 'terraform destroy -auto-approve'
-                     }
-                 }
-             }
-         }
-     }
- 
-     post {
-         success {
-             slackSend channel: 'iti', message: "✅ Terraform Apply Succeeded! Job: ${env.JOB_NAME}, Build: ${env.BUILD_NUMBER}"
-         }
-         failure {
-             slackSend channel: 'iti', message: "❌ Terraform Apply Failed! Job: ${env.JOB_NAME}, Build: ${env.BUILD_NUMBER}"
-         }
-     }
- }
+
+        stage('Clone Repository') {
+            steps {
+                git url: 'https://github.com/Nayra000/Terraform_Labs.git', branch: 'main'
+            }
+        }
+
+        stage('Initialize Terraform') {
+            steps {
+                dir('day1') {
+                    withEnv([
+                        "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
+                        "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
+                    ]) {
+                        sh 'terraform init'
+                    }
+                }
+            }
+        }
+
+        stage('Plan Infrastructure') {
+            steps {
+                dir('day1') {
+                    withEnv([
+                        "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
+                        "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
+                    ]) {
+                        sh 'terraform plan -out=tfplan'
+                    }
+                }
+            }
+        }
+
+        stage('Apply Changes') {
+            steps {
+                dir('day1') {
+                    withEnv([
+                        "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
+                        "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
+                    ]) {
+                        sh 'terraform apply tfplan'
+                    }
+                }
+            }
+        }
+
+        stage('Destroy Changes') {
+            steps {
+                dir('day1') {
+                    withEnv([
+                        "AWS_ACCESS_KEY_ID=${env.AWS_CREDS_USR}",
+                        "AWS_SECRET_ACCESS_KEY=${env.AWS_CREDS_PSW}"
+                    ]) {
+                        sh 'terraform destroy -auto-approve'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            slackSend channel: 'iti', message: "✅ Terraform Apply Succeeded! Job: ${env.JOB_NAME}, Build: ${env.BUILD_NUMBER}"
+        }
+        failure {
+            slackSend channel: 'iti', message: "❌ Terraform Apply Failed! Job: ${env.JOB_NAME}, Build: ${env.BUILD_NUMBER}"
+        }
+    }
+}
