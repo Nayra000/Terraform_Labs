@@ -9,7 +9,7 @@ resource "aws_instance" "bastion" {
   ami           = "ami-0e449927258d45bc4" 
   instance_type = "t2.micro"             
   subnet_id     = aws_subnet.public_subnet1.id
-  security_groups = [
+  vpc_security_group_ids = [
     aws_security_group.allow_ssh_anywhere.id
   ]
   # key_name = aws_key_pair.ssh_key. key_name
@@ -23,7 +23,7 @@ resource "aws_instance" "application" {
   ami           = "ami-0e449927258d45bc4" 
   instance_type = "t2.micro"             
   subnet_id     = aws_subnet.private_subnet1.id
-  security_groups = [
+  vpc_security_group_ids = [
     aws_security_group.allow_ssh_and_3000_vpc.id
   ]
   # key_name = aws_key_pair.ssh_key. key_name
